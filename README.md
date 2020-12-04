@@ -2,7 +2,7 @@ docker-php-nginx-mysql-memcached
 
 
 ```bash
-$ cd docker-php-nginx-mysql-memcached/docker
+$ cd docker-php-nginx-mysql-memcached
 $ docker-compose up
 ```
 
