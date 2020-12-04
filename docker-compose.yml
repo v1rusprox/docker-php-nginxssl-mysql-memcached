@@ -1,0 +1,43 @@
+version: '3'
+services:
+  memcached:
+    image: memcached:1.4
+    ports:
+      - "11212:11211"
+
+  mysql:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: mysql_database
+      MYSQL_USER: mysql_user
+      MYSQL_PASSWORD: mysql_pw
+    ports:
+      - "3306:3306"
+    volumes:
+      - "./application/initial.sql:/docker-entrypoint-initdb.d/initial.sql"
+      - "./db:/var/lib/mysql"
+    container_name: mysql
+
+  nginx:
+    build: ./nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "./public:/var/www/html/public"
+    container_name: nginx
+
+  web:
+    #    build: ./php-fpm73   # <- if you want to use PHP7.3
+    #    build: ./php-fpm72   # <- if you want to use PHP7.2
+    build: ./php-fpm71
+    #    build: ./php-fpm56    # <- if you want to use PHP5.6
+    volumes:
+      - "./public:/var/www/html/public"
+    environment:
+      DATABASE_HOST: 'mysql'
+      DATABASE_NAME: 'mysql_database'
+      DATABASE_USER: 'mysql_user'
+      DATABASE_PASSWORD: 'mysql_pw'
+    container_name: web
